@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     a.setApplicationVersion(QStringLiteral("1.0"));
-    if (writeToLocalServer(a.arguments().join(' ').toUtf8())) {
+    if (writeToLocalServer(a.arguments().join('\a').toUtf8())) {
         return EXIT_SUCCESS;
     }
     parse(a.arguments(), true);
@@ -50,7 +50,7 @@ bool openLocalServer()
     server->connect(ptr, &QLocalServer::newConnection, [ptr]{
         auto socket = ptr->nextPendingConnection();
         socket->connect(socket, &QLocalSocket::readyRead, [socket]{
-            auto response = parse(QString::fromUtf8(socket->readAll()).split(' '));
+            auto response = parse(QString::fromUtf8(socket->readAll()).split('\a'));
             qCInfo(serverSocketLog).noquote() << "WriteData :" << response;
             qCInfo(serverSocketLog).resetFormat();
             socket->write(response.toUtf8());
